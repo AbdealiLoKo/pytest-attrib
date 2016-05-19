@@ -75,3 +75,30 @@ def test_classes(spec, testdir):
     passed = [x.nodeid.split("::")[-1] for x in passed]
     assert len(passed) == len(passed_result)
     assert set(passed) == set(passed_result)
+
+@pytest.mark.parametrize("spec", [
+    ("xyz=='xyz'", ("test_one",)),
+    ("xyz=='xyz2'", ()),
+    ("xyz=='xyz2' or xyz2", ("test_two",)),
+    ("xyz=='xyz2' and xyz2=='xyz'", ()),
+    ("xyz=='xyz' and xyz2=='xyz2'", ()),
+])
+def test_conditionals(spec, testdir):
+    testdir.makepyfile("""
+        import unittest
+        class OneTest(unittest.TestCase):
+            def test_one(self):
+                pass
+            xyz = "xyz"
+
+        class TwoTest(unittest.TestCase):
+            def test_two(self):
+                pass
+            xyz2 = "xyz2"
+    """)
+    opt, passed_result = spec
+    rec = testdir.inline_run("-a", opt)
+    passed, skipped, fail = rec.listoutcomes()
+    passed = [x.nodeid.split("::")[-1] for x in passed]
+    assert len(passed) == len(passed_result)
+    assert set(passed) == set(passed_result)
