@@ -1,0 +1,24 @@
+language: python
+
+sudo: false
+
+python:
+  - '2.6'
+  - '2.7'
+  - '3.3'
+  - '3.4'
+  - '3.5'
+
+os:
+  - linux
+
+install:
+  - pip install -r requirements.txt
+  - pip install -e .
+
+script:
+  - py.test
+
+
+notifications:
+  email: false

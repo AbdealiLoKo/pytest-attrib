@@ -1,0 +1,4 @@
+pytest>=2.8.0
+pytest-cov
+pytest-env
+pytest-timeout
