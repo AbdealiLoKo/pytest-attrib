@@ -1,10 +1,10 @@
 import pytest
-import unittest
 
 
 def test_arg(testdir):
     result = testdir.runpytest("--help")
     result.stdout.fnmatch_lines("*-a ATTREXPR*")
+
 
 def test_config(testdir):
     config = testdir.parseconfig()
@@ -19,6 +19,7 @@ def test_config(testdir):
     config = testdir.parseconfig('-a', 'attr1==val1 and attr2==True',
                                  '-k', 'somethingelse')
     assert config.getoption('attrexpr') == 'attr1==val1 and attr2==True'
+
 
 @pytest.mark.parametrize("spec", [
     ("xyz", ("test_one",)),
@@ -42,6 +43,7 @@ def test_functions(spec, testdir):
     passed = [x.nodeid.split("::")[-1] for x in passed]
     assert len(passed) == len(passed_result)
     assert set(passed) == set(passed_result)
+
 
 @pytest.mark.parametrize("spec", [
     ("xyz", ("test_one",)),
@@ -75,6 +77,7 @@ def test_classes(spec, testdir):
     passed = [x.nodeid.split("::")[-1] for x in passed]
     assert len(passed) == len(passed_result)
     assert set(passed) == set(passed_result)
+
 
 @pytest.mark.parametrize("spec", [
     ("xyz=='xyz'", ("test_one",)),

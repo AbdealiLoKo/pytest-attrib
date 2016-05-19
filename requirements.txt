@@ -2,3 +2,9 @@ pytest>=2.8.0
 pytest-cov
 pytest-env
 pytest-timeout
+flake8
+pyflakes
+flake8-string-format
+pep8-naming
+pep257
+autopep8

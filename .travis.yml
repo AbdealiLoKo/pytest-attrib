@@ -18,7 +18,7 @@ install:
 
 script:
   - py.test
-
+  - flake8
 
 notifications:
   email: false
