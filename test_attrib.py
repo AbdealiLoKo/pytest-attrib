@@ -38,12 +38,10 @@ def test_config(testdir):
 ])
 def test_functions(spec, testdir):
     testdir.makepyfile("""
-        def test_one():
-            pass
+        def test_one(): pass
         test_one.xyz = "xyz"
 
-        def test_two():
-            pass
+        def test_two(): pass
         test_two.xyz2 = "xyz2"
     """)
     return check_passed(spec, testdir)
@@ -61,18 +59,15 @@ def test_classes(spec, testdir):
     testdir.makepyfile("""
         import unittest
         class OneTest(unittest.TestCase):
-            def test_one(self):
-                pass
+            def test_one(self): pass
         OneTest.xyz = "xyz"
 
         class TwoTest(unittest.TestCase):
-            def test_two(self):
-                pass
+            def test_two(self): pass
             xyz2 = "xyz2"
 
         class ThreeTest(unittest.TestCase):
-            def test_three(self):
-                pass
+            def test_three(self): pass
             test_three.xyz3 = "xyz3"
     """)
     return check_passed(spec, testdir)
@@ -89,13 +84,11 @@ def test_conditionals(spec, testdir):
     testdir.makepyfile("""
         import unittest
         class OneTest(unittest.TestCase):
-            def test_one(self):
-                pass
+            def test_one(self): pass
             xyz = "xyz"
 
         class TwoTest(unittest.TestCase):
-            def test_two(self):
-                pass
+            def test_two(self): pass
             xyz2 = "xyz2"
     """)
     return check_passed(spec, testdir)
