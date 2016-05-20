@@ -28,7 +28,7 @@ Usage examples
 --------------
 
 To use the plugin, the ``-a`` CLI argument has been provided. Consider a
-project with the test file:
+project with the test file::
 
     import unittest
 
