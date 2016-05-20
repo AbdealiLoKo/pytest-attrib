@@ -62,7 +62,11 @@ def test_functions(spec, testdir):
 ])
 def test_functions_decorated(spec, testdir):
     testdir.makepyfile("""
-        import unittest
+        import sys
+        if sys.version_info < (2, 7, 3):
+            import unittest2 as unittest
+        else:
+            import unittest
 
         @unittest.skipIf(1 == 1, 'From test_one')
         def test_one(): pass

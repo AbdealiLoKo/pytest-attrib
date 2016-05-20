@@ -8,3 +8,5 @@ flake8-string-format
 pep8-naming
 pep257
 autopep8
+
+unittest2 ; python_full_version < '2.7.3'
