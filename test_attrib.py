@@ -1,4 +1,5 @@
 import pytest
+import sys
 
 
 def check_passed(spec, testdir, with_parent=False):
@@ -80,11 +81,10 @@ def test_functions_decorated(spec, testdir):
 
 
 @pytest.mark.parametrize("spec", [
-    ("xyz", ("OneTest::test_one", "TwoTest::test_one", "TwoTest::test_two")),
-    ("xyz2", ("TwoTest::test_one", "TwoTest::test_two",)),
+    ("xyz", ("OneTest::test_one",)),
+    ("xyz2", ("TwoTest::test_two",)),
     ("xyz3", ("ThreeTest::test_three",)),
-    ("xyz2 or xyz3", ("TwoTest::test_one", "TwoTest::test_two",
-                      "ThreeTest::test_three")),
+    ("xyz2 or xyz3", ("TwoTest::test_two", "ThreeTest::test_three")),
 ])
 def test_classes(spec, testdir):
     testdir.makepyfile("""
@@ -93,13 +93,33 @@ def test_classes(spec, testdir):
             def test_one(self): pass
         OneTest.xyz = "xyz"
 
-        class TwoTest(OneTest):  # Inherited
+        class TwoTest(unittest.TestCase):
             def test_two(self): pass
             xyz2 = "xyz2"
 
         class ThreeTest(unittest.TestCase):
             def test_three(self): pass
             test_three.xyz3 = "xyz3"
+    """)
+    return check_passed(spec, testdir, with_parent=True)
+
+
+@pytest.mark.xfail(sys.version_info[0] == 3,
+                   reason="python3 does not support instance methods")
+@pytest.mark.parametrize("spec", [
+    ("xyz", ("OneTest::test_one", "TwoTest::test_one", "TwoTest::test_two")),
+    ("xyz2", ("TwoTest::test_one", "TwoTest::test_two",)),
+])
+def test_classes_inherited(spec, testdir):
+    testdir.makepyfile("""
+        import unittest
+        class OneTest(unittest.TestCase):
+            def test_one(self): pass
+        OneTest.xyz = "xyz"
+
+        class TwoTest(OneTest):
+            def test_two(self): pass
+            xyz2 = "xyz2"
     """)
     return check_passed(spec, testdir, with_parent=True)
 
