@@ -2,15 +2,20 @@ import pytest
 
 
 def check_passed(spec, testdir, with_parent=False):
-    opt, passed_result = spec
+    opt = spec[0]
+    expected_results = spec[1:]  # passed, skipped, failed
+
     rec = testdir.inline_run("-a", opt)
-    passed, skipped, fail = rec.listoutcomes()
-    if with_parent:
-        passed = ["::".join(x.nodeid.split("::")[-2:]) for x in passed]
-    else:
-        passed = [x.nodeid.split("::")[-1] for x in passed]
-    assert len(passed) == len(passed_result)
-    assert set(passed) == set(passed_result)
+    actual_results = rec.listoutcomes()
+    actual_results = actual_results[:len(expected_results)]
+
+    for expected, actual in zip(expected_results, actual_results):
+        if with_parent:
+            actual = ["::".join(x.nodeid.split("::")[-2:]) for x in actual]
+        else:
+            actual = [x.nodeid.split("::")[-1] for x in actual]
+        assert len(actual) == len(expected)
+        assert set(actual) == set(expected)
 
 
 def test_arg(testdir):
@@ -51,9 +56,9 @@ def test_functions(spec, testdir):
 
 
 @pytest.mark.parametrize("spec", [
-    ("xyz", ()),
+    ("xyz", (), ("test_one",)),
     ("xyz2", ("test_two",)),
-    ("1", ("test_two",)),  # Test without -a
+    ("1", ("test_two",), ("test_one",)),  # Test without -a
 ])
 def test_functions_decorated(spec, testdir):
     testdir.makepyfile("""
