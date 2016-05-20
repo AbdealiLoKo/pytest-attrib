@@ -1,6 +1,15 @@
 import pytest
 
 
+def check_passed(spec, testdir):
+    opt, passed_result = spec
+    rec = testdir.inline_run("-a", opt)
+    passed, skipped, fail = rec.listoutcomes()
+    passed = [x.nodeid.split("::")[-1] for x in passed]
+    assert len(passed) == len(passed_result)
+    assert set(passed) == set(passed_result)
+
+
 def test_arg(testdir):
     result = testdir.runpytest("--help")
     result.stdout.fnmatch_lines("*-a ATTREXPR*")
@@ -37,12 +46,7 @@ def test_functions(spec, testdir):
             pass
         test_two.xyz2 = "xyz2"
     """)
-    opt, passed_result = spec
-    rec = testdir.inline_run("-a", opt)
-    passed, skipped, fail = rec.listoutcomes()
-    passed = [x.nodeid.split("::")[-1] for x in passed]
-    assert len(passed) == len(passed_result)
-    assert set(passed) == set(passed_result)
+    return check_passed(spec, testdir)
 
 
 @pytest.mark.parametrize("spec", [
@@ -71,12 +75,7 @@ def test_classes(spec, testdir):
                 pass
             test_three.xyz3 = "xyz3"
     """)
-    opt, passed_result = spec
-    rec = testdir.inline_run("-a", opt)
-    passed, skipped, fail = rec.listoutcomes()
-    passed = [x.nodeid.split("::")[-1] for x in passed]
-    assert len(passed) == len(passed_result)
-    assert set(passed) == set(passed_result)
+    return check_passed(spec, testdir)
 
 
 @pytest.mark.parametrize("spec", [
@@ -99,9 +98,4 @@ def test_conditionals(spec, testdir):
                 pass
             xyz2 = "xyz2"
     """)
-    opt, passed_result = spec
-    rec = testdir.inline_run("-a", opt)
-    passed, skipped, fail = rec.listoutcomes()
-    passed = [x.nodeid.split("::")[-1] for x in passed]
-    assert len(passed) == len(passed_result)
-    assert set(passed) == set(passed_result)
+    return check_passed(spec, testdir)
