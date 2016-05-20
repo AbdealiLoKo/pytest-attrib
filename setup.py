@@ -19,7 +19,7 @@ if __name__ == '__main__':
         install_requires=['pytest>=2.2'],
         license="MIT License",
         classifiers=[
-            'Development Status :: 4 - Beta Development Status',
+            'Development Status :: 4 - Beta',
             'Environment :: Plugins',
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
