@@ -80,6 +80,50 @@ def test_functions_decorated(spec, testdir):
     return check_passed(spec, testdir)
 
 
+@pytest.mark.xfail(sys.version_info[0] == 3,
+                   reason="python3 does not support instance methods")
+@pytest.mark.parametrize("spec", [
+    ("xyz", ("test_two", "test_four",), ("test_one", "test_three",)),
+])
+def test_functions_badly_decorated(spec, testdir):
+    testdir.makepyfile("""
+        import functools
+        import sys
+        if sys.version_info < (2, 7, 3):
+            import unittest2 as unittest
+        else:
+            import unittest
+
+        def allowed_failure(func):
+            def wrapper(*args, **kwargs):
+                try: func(*args, **kwargs)
+                except AssertionError:
+                    raise unittest.SkipTest('Failing is ok')
+            wrapper.__name__ == func.__name__
+            return wrapper
+
+        class MyTest(unittest.TestCase):
+            @allowed_failure
+            def test_one(self):
+                raise AssertionError('Failing in test_one')
+            xyz = "xyz"
+
+            @allowed_failure
+            def test_two(self): pass
+            xyz = "xyz"
+
+        @allowed_failure
+        def test_three():
+            raise AssertionError('Failing in test_three')
+        test_three.xyz = "xyz"
+
+        @allowed_failure
+        def test_four(): pass
+        test_four.xyz = "xyz"
+    """)
+    return check_passed(spec, testdir)
+
+
 @pytest.mark.parametrize("spec", [
     ("xyz", ("OneTest::test_one",)),
     ("xyz2", ("TwoTest::test_two",)),
