@@ -68,7 +68,7 @@ def test_classes(spec, testdir):
         class TwoTest(unittest.TestCase):
             def test_two(self):
                 pass
-        TwoTest.xyz2 = "xyz2"
+            xyz2 = "xyz2"
 
         class ThreeTest(unittest.TestCase):
             def test_three(self):
