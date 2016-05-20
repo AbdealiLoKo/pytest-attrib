@@ -1,11 +1,14 @@
 import pytest
 
 
-def check_passed(spec, testdir):
+def check_passed(spec, testdir, with_parent=False):
     opt, passed_result = spec
     rec = testdir.inline_run("-a", opt)
     passed, skipped, fail = rec.listoutcomes()
-    passed = [x.nodeid.split("::")[-1] for x in passed]
+    if with_parent:
+        passed = ["::".join(x.nodeid.split("::")[-2:]) for x in passed]
+    else:
+        passed = [x.nodeid.split("::")[-1] for x in passed]
     assert len(passed) == len(passed_result)
     assert set(passed) == set(passed_result)
 
@@ -48,12 +51,11 @@ def test_functions(spec, testdir):
 
 
 @pytest.mark.parametrize("spec", [
-    ("xyz", ("test_one",)),
-    ("xyz and xyz2", ()),
-    ("xyz2", ("test_two",)),
-    ("xyz or xyz2", ("test_one", "test_two")),
-    ("xyz3", ("test_three",)),
-    ("xyz or xyz2 or xyz3", ("test_one", "test_two", "test_three")),
+    ("xyz", ("OneTest::test_one", "TwoTest::test_one", "TwoTest::test_two")),
+    ("xyz2", ("TwoTest::test_one", "TwoTest::test_two",)),
+    ("xyz3", ("ThreeTest::test_three",)),
+    ("xyz2 or xyz3", ("TwoTest::test_one", "TwoTest::test_two",
+                      "ThreeTest::test_three")),
 ])
 def test_classes(spec, testdir):
     testdir.makepyfile("""
@@ -62,7 +64,7 @@ def test_classes(spec, testdir):
             def test_one(self): pass
         OneTest.xyz = "xyz"
 
-        class TwoTest(unittest.TestCase):
+        class TwoTest(OneTest):  # Inherited
             def test_two(self): pass
             xyz2 = "xyz2"
 
@@ -70,7 +72,7 @@ def test_classes(spec, testdir):
             def test_three(self): pass
             test_three.xyz3 = "xyz3"
     """)
-    return check_passed(spec, testdir)
+    return check_passed(spec, testdir, with_parent=True)
 
 
 @pytest.mark.parametrize("spec", [
