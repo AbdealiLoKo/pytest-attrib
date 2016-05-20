@@ -30,9 +30,6 @@ Usage examples
 To use the plugin, the ``-a`` CLI argument has been provided. Consider a
 project with the test file:
 
-.. code-block:: python
-   :caption: test_sample.py
-
     import unittest
 
     class MyTestCase(unittest.TestCase):
