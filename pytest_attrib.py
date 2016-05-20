@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import inspect
-import sys
+import pytest
 
 __version__ = '0.1'
 
@@ -37,24 +36,6 @@ def match_attr(item, expr):
     return eval(expr, {}, AttrMapping(item))
 
 
-def get_class_that_defined_method(meth):
-    # In python3 there is no concept of unbound methods and a class
-    # method is simply a function.
-    # This is a function that attempts to find the class of the method.
-    # Taken from:
-    # http://stackoverflow.com/questions/3589311/get-defining-class-of-unbound-method-object-in-python-3
-    if sys.version_info[0] == 2:
-        return getattr(meth, 'im_class', None)
-    else:
-        if inspect.isfunction(meth):
-            cls = getattr(
-                inspect.getmodule(meth),
-                meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
-            if isinstance(cls, type):
-                return cls
-    return None  # Failed to find class
-
-
 class AttrMapping:
     """
     Provide a mapping for attributes of an item, where if the attribute does
@@ -71,9 +52,9 @@ class AttrMapping:
         if objattr != missing_attr:
             return objattr
 
-        cls = get_class_that_defined_method(obj)
-        if cls is not None:
-            clsattr = getattr(cls, name, missing_attr)
+        cls = self._item.parent
+        if isinstance(cls, pytest.Class):
+            clsattr = getattr(cls.obj, name, missing_attr)
             if clsattr != missing_attr:
                 return clsattr
 

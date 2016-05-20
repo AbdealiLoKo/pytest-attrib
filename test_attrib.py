@@ -1,5 +1,4 @@
 import pytest
-import sys
 
 
 def check_passed(spec, testdir, with_parent=False):
@@ -80,8 +79,6 @@ def test_functions_decorated(spec, testdir):
     return check_passed(spec, testdir)
 
 
-@pytest.mark.xfail(sys.version_info[0] == 3,
-                   reason="python3 does not support instance methods")
 @pytest.mark.parametrize("spec", [
     ("xyz", ("test_two", "test_four",), ("test_one", "test_three",)),
 ])
@@ -148,8 +145,6 @@ def test_classes(spec, testdir):
     return check_passed(spec, testdir, with_parent=True)
 
 
-@pytest.mark.xfail(sys.version_info[0] == 3,
-                   reason="python3 does not support instance methods")
 @pytest.mark.parametrize("spec", [
     ("xyz", ("OneTest::test_one", "TwoTest::test_one", "TwoTest::test_two")),
     ("xyz2", ("TwoTest::test_one", "TwoTest::test_two",)),
