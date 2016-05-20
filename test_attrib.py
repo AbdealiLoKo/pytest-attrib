@@ -51,6 +51,26 @@ def test_functions(spec, testdir):
 
 
 @pytest.mark.parametrize("spec", [
+    ("xyz", ()),
+    ("xyz2", ("test_two",)),
+    ("1", ("test_two",)),  # Test without -a
+])
+def test_functions_decorated(spec, testdir):
+    testdir.makepyfile("""
+        import unittest
+
+        @unittest.skipIf(1 == 1, 'From test_one')
+        def test_one(): pass
+        test_one.xyz = "xyz"
+
+        @unittest.skipIf(1 == 0, 'From test_two')
+        def test_two(): pass
+        test_two.xyz2 = "xyz2"
+    """)
+    return check_passed(spec, testdir)
+
+
+@pytest.mark.parametrize("spec", [
     ("xyz", ("OneTest::test_one", "TwoTest::test_one", "TwoTest::test_two")),
     ("xyz2", ("TwoTest::test_one", "TwoTest::test_two",)),
     ("xyz3", ("ThreeTest::test_three",)),
