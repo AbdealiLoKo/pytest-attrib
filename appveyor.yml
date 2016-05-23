@@ -1,0 +1,50 @@
+environment:
+
+  global:
+    APPVEYOR_PYTHON_URL: "https://raw.githubusercontent.com/ogrisel/python-appveyor-demo/master/appveyor/"
+
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+
+  matrix:
+    - PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7.x" # currently 2.7.9
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python34"
+      PYTHON_VERSION: "3.4.x" # currently 3.4.3
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python27-x64"
+      PYTHON_VERSION: "2.7.x" # currently 2.7.9
+      PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.x" # currently 3.4.3
+      PYTHON_ARCH: "64"
+
+init:
+  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+install:
+  # Download the Appveyor Python build accessories into subdirectory .\appveyor
+  - mkdir appveyor
+  - ps: $wc = new-object net.webclient
+  - ps: $run = $wc.DownloadString($env:APPVEYOR_PYTHON_URL + 'run_with_env.cmd')
+  - ps: $run | Out-File -Encoding ascii -FilePath appveyor\run_with_env.cmd
+
+  # This is needed for Python versions not installed on Appveyor build machines
+  - ps: if (-not(Test-Path($env:PYTHON))) { iex $wc.DownloadString($env:APPVEYOR_PYTHON_URL + 'install.ps1') }
+  - pip install virtualenv
+  - virtualenv env
+  - env\Scripts\activate.bat
+  - pip install -r requirements.txt
+
+build: off
+
+test_script:
+  - "%CMD_IN_ENV% pip install -e ."
+  - "%CMD_IN_ENV% python -m pytest"

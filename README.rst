@@ -1,6 +1,9 @@
 .. image:: https://travis-ci.org/AbdealiJK/pytest-attrib.svg?branch=master
     :target: https://travis-ci.org/AbdealiJK/pytest-attrib
 
+.. image:: https://ci.appveyor.com/api/projects/status/1q5qdliai6hu4hrv/branch/master?svg=true
+    :target: https://ci.appveyor.com/project/AbdealiJK/pytest-attrib
+
 pytest-attrib
 =============
 
