@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from pytest_attrib import __version__
+import pytest_attrib
 
 
 if __name__ == '__main__':
@@ -10,14 +10,15 @@ if __name__ == '__main__':
         description='pytest plugin to select tests based on attributes '
                     'similar to the nose-attrib plugin',
         long_description=open("README.rst").read(),
-        version=__version__,
+        version=pytest_attrib.__version__,
         author='Abdeali JK',
         author_email='abdealikothari@gmail.com',
         url='http://pypi.python.org/pypi/pytest-attrib/',
         py_modules=['pytest_attrib'],
-        entry_points={'pytest11': ['attrib = pytest_attrib']},
+        entry_points={'pytest11': ['attrib = pytest_attrib.plugin']},
         install_requires=['pytest>=2.2'],
         license="MIT License",
+        package_data={'file_metadata': ["VERSION"]},
         classifiers=[
             'Development Status :: 4 - Beta',
             'Environment :: Plugins',
