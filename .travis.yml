@@ -13,12 +13,10 @@ os:
   - linux
 
 install:
-  - pip install -r requirements.txt
-  - pip install -e .
+  - pip install pytest-attrib
 
 script:
-  - py.test
-  - flake8
+  - echo Nothing
 
 notifications:
   email: false
