@@ -19,6 +19,10 @@ install:
 script:
   - py.test
   - flake8
+  # Ensure latest pytest-attrib in pypi works
+  - pip uninstall pytest-attrib -y
+  - python setup.py sdist
+  - pip install --no-deps --no-cache-dir --force-reinstall --no-index --find-links dist pytest-attrib
 
 notifications:
   email: false
