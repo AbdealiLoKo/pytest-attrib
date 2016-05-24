@@ -18,7 +18,7 @@ if __name__ == '__main__':
         entry_points={'pytest11': ['attrib = pytest_attrib.plugin']},
         install_requires=['pytest>=2.2'],
         license="MIT License",
-        package_data={'file_metadata': ["VERSION"]},
+        package_data={'pytest_attrib': ["VERSION"]},
         classifiers=[
             'Development Status :: 4 - Beta',
             'Environment :: Plugins',
