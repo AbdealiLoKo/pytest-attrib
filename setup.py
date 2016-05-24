@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import find_packages, setup
 import pytest_attrib
 
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
         author='Abdeali JK',
         author_email='abdealikothari@gmail.com',
         url='http://pypi.python.org/pypi/pytest-attrib/',
-        py_modules=['pytest_attrib'],
+        packages=find_packages(exclude=["build.*", "tests", "tests.*"]),
         entry_points={'pytest11': ['attrib = pytest_attrib.plugin']},
         install_requires=['pytest>=2.2'],
         license="MIT License",
