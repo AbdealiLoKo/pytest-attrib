@@ -22,6 +22,9 @@ def test_arg(testdir):
     result = testdir.runpytest("--help")
     result.stdout.fnmatch_lines("*-a ATTREXPR*")
 
+    result = testdir.runpytest("--help")
+    result.stdout.fnmatch_lines("*--eval-attr=ATTREXPR*")
+
 
 def test_config(testdir):
     config = testdir.parseconfig()
@@ -34,6 +37,21 @@ def test_config(testdir):
     assert config.getoption('attrexpr') == 'attr1==val1 and attr2==True'
 
     config = testdir.parseconfig('-a', 'attr1==val1 and attr2==True',
+                                 '-k', 'somethingelse')
+    assert config.getoption('attrexpr') == 'attr1==val1 and attr2==True'
+
+
+def test_long_config(testdir):
+    config = testdir.parseconfig()
+    assert config.getoption('attrexpr') == ''
+
+    config = testdir.parseconfig('--eval-attr', 'attr1')
+    assert config.getoption('attrexpr') == 'attr1'
+
+    config = testdir.parseconfig('--eval-attr', 'attr1==val1 and attr2==True')
+    assert config.getoption('attrexpr') == 'attr1==val1 and attr2==True'
+
+    config = testdir.parseconfig('--eval-attr', 'attr1==val1 and attr2==True',
                                  '-k', 'somethingelse')
     assert config.getoption('attrexpr') == 'attr1==val1 and attr2==True'
 

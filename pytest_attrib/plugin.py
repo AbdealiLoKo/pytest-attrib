@@ -5,7 +5,7 @@ import pytest
 
 def pytest_addoption(parser):
     group = parser.getgroup("general")
-    group._addoption("-a", action="store", default="",
+    group._addoption("--eval-attr", "-a", action="store", default="",
                      dest="attrexpr", metavar="ATTREXPR",
                      help='Only run tests matching given attribute expression.'
                           '  Example: -a "attr1==val1 and attr2==val2".')
