@@ -8,17 +8,22 @@ pytest-attrib
 =============
 
 The `pytest-attrib`_ plugin extends py.test with the ability to select tests
-based on a criteria rather than just the filename or pytest.marks. For
+based on a criteria rather than just the filename or pytest.mark. For
 example, you might want to run only tests that need internet connectivity,
 or tests that are slow.
 
 The `pytest.mark <https://pytest.org/latest/mark.html>`__ plugin already
-provides a featrure to mark tests and run only the marked tests. This plugin
-also allows to run expressions on the attributes of the class, and does not
-require the pytest.mark decorator.
+provides a feature to mark tests and run only the marked tests. This plugin
+also allows to select tests based on expressions of the attributes of the
+class or function, and does not require the pytest.mark decorator.
 
 It offers features similar to the nose plugin
 `nose-attrib <http://nose.readthedocs.io/en/latest/plugins/attrib.html>`__.
+To maintain compatibility with nose-attrib, the ``--eval-attr`` argument is
+provided which provides eval-like attribute selection. Note that
+`pytest-attrib`_ also provides the ``-a`` argument as an alias to
+``--eval-attr``, hence ``-a`` uses eval-like expressions too
+(unlike nose-attr).
 
 Installation
 ------------
@@ -30,8 +35,11 @@ Install the plugin with::
 Usage examples
 --------------
 
-To use the plugin, the ``-a`` CLI argument has been provided. Consider a
-project with the test file::
+To use the plugin, the ``-a`` (or ``--eval-attr``) CLI argument has been
+provided. Consider a project with the test file:
+
+.. code-block:: python
+   :caption: test_sample.py
 
     import unittest
 
