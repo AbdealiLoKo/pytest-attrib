@@ -9,6 +9,9 @@ def pytest_addoption(parser):
                      dest="attrexpr", metavar="ATTREXPR",
                      help='Only run tests matching given attribute expression.'
                           '  Example: -a "attr1==val1 and attr2==val2".')
+    group._addoption("--eval-attr-skiperror", action="store_true",
+                     dest="skiperrorexpr",
+                     help="Treat expression evaluation exception as mismatch.")
 
 
 def pytest_collection_modifyitems(items, config):
@@ -31,7 +34,14 @@ def pytest_collection_modifyitems(items, config):
 
 
 def match_attr(item, expr):
-    return eval(expr, {}, AttrMapping(item))
+    # separate `if` to keep `try` Python 2 and 3 compatible
+    if not skiperrorexpr:
+        return eval(expr, {}, AttrMapping(item))
+    
+    try:  # skiperrorexpr == True
+        return eval(expr, {}, AttrMapping(item))
+    except Exception:
+        return False
 
 
 class AttrMapping:
